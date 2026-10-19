@@ -26,24 +26,28 @@ p{line-height:1.8;color:#dce3ff}
 </head>
 <body><div class="stars"></div>
 <!-- 隐藏的背景音乐播放器 -->
-<audio id="bgm" src="bgm.m4a" loop></audio>
-
-<!-- 悬浮的音乐提示按钮（可选） -->
-<div id="music-tip" style="position:fixed; top:20px; right:20px; z-index:9999; background:rgba(255,255,255,0.9); border-radius:50%; width:50px; height:50px; display:flex; align-items:center; justify-content:center; font-size:24px; box-shadow:0 4px 12px rgba(0,0,0,0.1); pointer-events:none;">🎵</div>
+<audio id="bgm" src="bgm.mp3" loop preload="auto"></audio>
 
 <script>
-  // 当用户在页面上点击或触摸屏幕任何地方时，触发音乐播放
-  function playMusic() {
+  // 监听页面上的所有点击事件
+  document.addEventListener('click', function(e) {
     var bgm = document.getElementById('bgm');
-    bgm.play();
-    // 播放后移除监听器，避免重复触发
-    document.removeEventListener('click', playMusic);
-    document.removeEventListener('touchstart', playMusic);
-  }
+    
+    // 如果音乐还没在播放，就让它播放
+    if (bgm.paused) {
+      bgm.play().catch(function(error) {
+        console.log("播放失败，可能是浏览器拦截了或者格式不对");
+      });
+    }
+  });
   
-  // 监听用户点击和触摸事件
-  document.addEventListener('click', playMusic);
-  document.addEventListener('touchstart', playMusic);
+  // 针对安卓/微信的兼容写法
+  document.addEventListener('touchstart', function(e) {
+    var bgm = document.getElementById('bgm');
+    if (bgm.paused) {
+      bgm.play().catch(function(error){});
+    }
+  }, { once: true }); // 只触发一次
 </script>
 <main><section class="card">
 <div class="kicker">A LITTLE SECRET FOR YOU</div>
